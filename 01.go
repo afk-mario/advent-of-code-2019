@@ -149,5 +149,8 @@ func valueByArg() {
 }
 
 func getFuel(mass int) int {
-	return mass/3 - 2
+	if mass <= 0 {
+		return mass/3 - 2
+	}
+	return getFuel(mass/3 - 2)
 }
