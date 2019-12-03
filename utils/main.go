@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"io"
 	"strconv"
+	"strings"
 )
 
 // ReadInts reads whitespace-separated ints from r. If there's an error, it
@@ -45,4 +46,15 @@ func SplitComma(data []byte, atEOF bool) (advance int, token []byte, err error) 
 	// more data in from the input reader. In this case, this input is our
 	// string reader and this pretty much will never occur.
 	return 0, nil, nil
+}
+
+// FmtIntSlice returns a formatted int slice into a string comma separated
+func FmtIntSlice(values []int) string {
+	valuesText := []string{}
+	for i := range values {
+		number := values[i]
+		text := strconv.Itoa(number)
+		valuesText = append(valuesText, text)
+	}
+	return strings.Join(valuesText, ",")
 }
