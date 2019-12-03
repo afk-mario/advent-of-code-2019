@@ -24,6 +24,18 @@ func ReadInts(r io.Reader, split bufio.SplitFunc) ([]int, error) {
 	return result, scanner.Err()
 }
 
+// ReadStrings reads whitespace-separated strings from r. If there's an error, it
+// returns the ints successfully read so far as well as the error value.
+func ReadStrings(r io.Reader, split bufio.SplitFunc) ([]string, error) {
+	scanner := bufio.NewScanner(r)
+	scanner.Split(split)
+	var result []string
+	for scanner.Scan() {
+		result = append(result, scanner.Text())
+	}
+	return result, scanner.Err()
+}
+
 // SplitComma splits comma separated data
 func SplitComma(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	commaidx := bytes.IndexByte(data, ',')
@@ -57,4 +69,12 @@ func FmtIntSlice(values []int) string {
 		valuesText = append(valuesText, text)
 	}
 	return strings.Join(valuesText, ",")
+}
+
+// Abs returns the absolute value of x.
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
