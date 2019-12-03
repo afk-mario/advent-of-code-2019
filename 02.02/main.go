@@ -11,23 +11,16 @@ import (
 
 func main() {
 	inputPath := flag.String("input", "./input.txt", "input file path")
-	noun := flag.Int("noun", -1, "the noun of the problem")
-	verb := flag.Int("verb", -1, "the verb of the problem")
 	flag.Parse()
-
-	if *noun == -1 || *verb == -1 {
-		flag.PrintDefaults()
-		os.Exit(1)
-	}
 
 	if len(flag.Args()) > 0 {
 		valueByArg(flag.Args()[0])
 	}
 
-	valueByInput(*inputPath, *noun, *verb)
+	valueByInput(*inputPath)
 }
 
-func valueByInput(file string, noun int, verb int) {
+func valueByInput(file string) {
 	fmt.Println("\nPrinting value by file ---", file)
 	f, err := os.Open(file)
 	if err != nil {
@@ -41,21 +34,21 @@ func valueByInput(file string, noun int, verb int) {
 		panic(err)
 	}
 
-	input[1] = noun
-	input[2] = verb
-
-	result := transformData(input)
-	fmtResult := utils.FmtIntSlice(result)
-	fmt.Println("\nPrinting value by input ---", file)
-	fmt.Println("\nResult:", fmtResult)
-
-	f, err = os.Create("output.txt")
-	if err != nil {
-		panic(err)
+	for i := 0; i <= 99; i++ {
+		for j := 0; j <= 99; j++ {
+			arr := append([]int(nil), input...)
+			arr[1] = i // noun
+			arr[2] = j // verb
+			result := transformData(arr)
+			if result[0] == 19_690_720 {
+				fmt.Printf("Found result noun=%d verb=%d \n\n", i, j)
+				fmtResult := utils.FmtIntSlice(result)
+				fmt.Println(fmtResult)
+				return
+			}
+		}
 	}
-	defer f.Close()
-	_, err = f.WriteString(fmtResult)
-	f.Sync()
+
 }
 
 func valueByArg(arg string) {
