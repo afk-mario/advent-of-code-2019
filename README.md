@@ -5,7 +5,7 @@
 <img height="100" width="auto" alt="advent" src="https://placekitten.com/200/200" />
 </a>
 <br/>
-<p>Repo for Advent of code 2019 made in GO</p>
+<p>Made in GO</p>
 
 </div>
 
