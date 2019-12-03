@@ -4,7 +4,6 @@ import (
 	"advent/utils"
 	"flag"
 	"fmt"
-	// "io/ioutil"
 	"os"
 	"strings"
 )
@@ -40,7 +39,7 @@ func valueByInput(file string) {
 			arr[1] = i // noun
 			arr[2] = j // verb
 			result := transformData(arr)
-			if result[0] == 19_690_720 {
+			if result[0] == 19690720 {
 				fmt.Printf("Found result noun=%d verb=%d \n\n", i, j)
 				fmtResult := utils.FmtIntSlice(result)
 				fmt.Println(fmtResult)

@@ -4,7 +4,6 @@ import (
 	"advent/utils"
 	"flag"
 	"fmt"
-	// "io/ioutil"
 	"os"
 	"strings"
 )
