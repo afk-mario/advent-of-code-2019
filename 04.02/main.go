@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 type opts struct {
@@ -80,22 +79,19 @@ func hasAdjacent(a int) bool {
 func hasAdjecentTwo(a int) bool {
 
 	b := strconv.Itoa(a)
-	arr := make([]strings.Builder, len(b))
-	var bu strings.Builder
-	arr = append(arr, bu)
+	arr := make([][]byte, 1)
 	j := 0
 	for i := 0; i < len(b)-1; i++ {
 		if b[i] == b[i+1] {
-			arr[j].WriteByte(b[i])
+			arr[j] = append(arr[j], b[i])
 		} else {
-			var acc strings.Builder
 			j++
-			arr = append(arr, acc)
+			arr = append(arr, make([]byte, 0))
 		}
 	}
 
 	for _, s := range arr {
-		if s.Len() == 1 {
+		if len(s) == 1 {
 			return true
 		}
 	}
