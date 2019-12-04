@@ -77,7 +77,6 @@ func hasAdjacent(a int) bool {
 }
 
 func hasAdjecentTwo(a int) bool {
-
 	b := strconv.Itoa(a)
 	arr := make([][]byte, 1)
 	j := 0
@@ -101,8 +100,6 @@ func hasAdjecentTwo(a int) bool {
 func neverDecreases(a int) bool {
 	b := strconv.Itoa(a)
 	for i := 0; i < len(b)-1; i++ {
-		// x, _ := strconv.Atoi(string(b[i]))
-		// y, _ := strconv.Atoi(string(b[i+1]))
 		x := b[i]
 		y := b[i+1]
 		if x > y {

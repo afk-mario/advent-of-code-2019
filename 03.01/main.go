@@ -9,6 +9,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	svg "github.com/ajstarks/svgo"
 )
 
 type opts struct {
@@ -145,7 +147,52 @@ func drawCables(a []vector2, b []vector2, c []vector2) {
 		}
 		acc.WriteString("\n")
 	}
-	fmt.Println(acc.String())
+
+	f, err := os.Create("output.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	_, err = f.WriteString(acc.String())
+	f.Sync()
+
+	if _o.debug {
+		fmt.Println(acc.String())
+	}
+	drawCablesSvg(grid)
+}
+
+func drawCablesSvg(grid [][]int, maxX int, maxY int) {
+
+	f, err := os.Create("output.svg")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	width := 1024
+	height := 1024
+	canvas := svg.New(f)
+	canvas.Start(width, height)
+	canvas.Grid(0, 0, width, height, len(grid), "stroke:black")
+
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < maxX; j++ {
+			// acc.WriteString(" ")
+			if grid[i][j] == -1 {
+				canvas.Circle(10*i, 10*j, 1, "fill:black;stroke:black")
+			} else if grid[i][j] == 0 {
+				canvas.Circle(10*i, 10*j, 1, "fill:none;stroke:black")
+			} else if grid[i][j] == 1 {
+				canvas.Circle(10*i, 10*j, 1, "fill:none;stroke:red")
+			} else if grid[i][j] == 10 {
+				canvas.Circle(10*i, 10*j, 1, "fill:none;stroke:blue")
+			} else if grid[i][j] == 20 {
+				canvas.Circle(10*i, 10*j, 1, "fill:none;stroke:green")
+			}
+		}
+	}
+
+	canvas.End()
 }
 
 func (l *line) getIntersection(b line) vector2 {

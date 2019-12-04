@@ -12,7 +12,7 @@ func TestAbs(t *testing.T) {
 	}
 }
 
-// TestPow should be -1 = 1 1 = 1
+// TestPow should be 2 ^ 10 = 1024
 func TestPow(t *testing.T) {
 	got := Pow(2, 10)
 	if got != 1024 {
