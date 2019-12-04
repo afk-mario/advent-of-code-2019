@@ -11,6 +11,14 @@ import (
 	"strings"
 )
 
+type opts struct {
+	filePath string
+	debug    bool
+	draw     bool
+}
+
+var _o opts
+
 type vector2 struct {
 	x int
 	y int
@@ -63,11 +71,31 @@ func drawCables(a []vector2, b []vector2, c []vector2) {
 
 	allPos := append(a, b...)
 	sortByX(allPos)
+	minX := allPos[0].x
 	maxX := allPos[len(allPos)-1].x + 1
 	sortByY(allPos)
+	minY := allPos[0].y
 	maxY := allPos[len(allPos)-1].y + 1
 
-	fmt.Println("\n")
+	if minX < 0 {
+		minX = utils.Abs(minX)
+		maxX += minX
+	} else {
+		minX = 0
+	}
+
+	if minY < 0 {
+		minY = utils.Abs(minY)
+		maxY += minY
+	} else {
+		minY = 0
+	}
+
+	fmt.Println(minX)
+	fmt.Println(minY)
+
+	fmt.Println("")
+	fmt.Println("")
 
 	// linesA := positionsToLineSegments(positionsA)
 	// linesB := positionsToLineSegments(positionsB)
@@ -83,16 +111,16 @@ func drawCables(a []vector2, b []vector2, c []vector2) {
 
 	// add cables from a
 	for _, pos := range a {
-		grid[pos.y][pos.x] = 1 // +
+		grid[pos.y+minY][pos.x+minX] = 1 // +
 	}
 
 	// add cables from a
 	for _, pos := range b {
-		grid[pos.y][pos.x] = 10 // +
+		grid[pos.y+minY][pos.x+minX] = 10 // +
 	}
 
 	for _, pos := range c {
-		grid[pos.y][pos.x] = 20 // x
+		grid[pos.y+minY][pos.x+minX] = 20 // x
 	}
 
 	grid[0][0] = -1
@@ -100,7 +128,7 @@ func drawCables(a []vector2, b []vector2, c []vector2) {
 	var acc strings.Builder
 	for i := 0; i < maxY; i++ {
 		for j := 0; j < maxX; j++ {
-			acc.WriteString(" ")
+			// acc.WriteString(" ")
 			if grid[i][j] == -1 {
 				acc.WriteString("o")
 			} else if grid[i][j] == 0 {
@@ -113,7 +141,7 @@ func drawCables(a []vector2, b []vector2, c []vector2) {
 			} else if grid[i][j] == 20 {
 				acc.WriteString("x")
 			}
-			acc.WriteString(" ")
+			// acc.WriteString(" ")
 		}
 		acc.WriteString("\n")
 	}
@@ -160,8 +188,15 @@ func sortByY(s []vector2) {
 
 func main() {
 	inputPath := flag.String("input", "./input.txt", "input file path")
-	// verbose := flag.Bool("v", false, "Extra prints")
+	debug := flag.Bool("debug", false, "debug text")
+	draw := flag.Bool("draw", false, "draw cables")
 	flag.Parse()
+
+	_o = opts{
+		*inputPath,
+		*debug,
+		*draw,
+	}
 
 	if len(flag.Args()) > 0 {
 		valueByArg(flag.Args()[0], flag.Args()[1])
@@ -208,10 +243,13 @@ func valueByArg(_a string, _b string) {
 	positionsA := instructionsToPositions(a)
 	positionsB := instructionsToPositions(b)
 
-	fmt.Println("\n")
+	fmt.Println("")
+	fmt.Println("")
 
 	collisions := findCollisions(positionsA, positionsB)
-	// drawCables(positionsA, positionsB, collisions)
+	if _o.draw {
+		drawCables(positionsA, positionsB, collisions)
+	}
 	sortByMDistance(collisions)
 	fmt.Println("\nResult:", collisions[0].mDistance())
 }
