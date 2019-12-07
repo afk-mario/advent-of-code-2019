@@ -56,9 +56,11 @@ func readOpcodes(input []int) []int {
 	result := append([]int(nil), input...)
 	pointer := 5
 	for i := 0; i < len(result); i += pointer {
+
 		instruction := -1
 		t := strconv.Itoa(result[i])
 		l := len(t)
+
 		modA := 0
 		modB := 0
 		modC := 0
@@ -92,9 +94,11 @@ func readOpcodes(input []int) []int {
 		if modA == 0 {
 			a = result[a]
 		}
+
 		if modB == 0 {
 			b = result[b]
 		}
+
 		if modC == 0 {
 			c = result[c]
 		}

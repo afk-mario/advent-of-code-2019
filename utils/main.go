@@ -38,7 +38,17 @@ func ReadStrings(r io.Reader, split bufio.SplitFunc) ([]string, error) {
 
 // SplitComma splits comma separated data
 func SplitComma(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	commaidx := bytes.IndexByte(data, ',')
+	return SplitByChar(',', data, atEOF)
+}
+
+// SplitParenthesis splits comma separated data
+func SplitParenthesis(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	return SplitByChar(')', data, atEOF)
+}
+
+// SplitByChar splits data by a char
+func SplitByChar(char byte, data []byte, atEOF bool) (advance int, token []byte, err error) {
+	commaidx := bytes.IndexByte(data, char)
 	if commaidx > 0 {
 		// we need to return the next position
 		buffer := data[:commaidx]
@@ -71,6 +81,15 @@ func FmtIntSlice(values []int) string {
 	return strings.Join(valuesText, ",")
 }
 
+// FmtStrSlice returns a formatted str slice into comma separated
+func FmtStrSlice(values []string) string {
+	valuesText := []string{}
+	for i := range values {
+		valuesText = append(valuesText, values[i])
+	}
+	return strings.Join(valuesText, ",")
+}
+
 // Abs returns the absolute value of x.
 func Abs(x int) int {
 	if x < 0 {
@@ -92,5 +111,35 @@ func Pow(a, b int) int {
 		a *= a
 	}
 
+	return result
+}
+
+// Unique Remove duplicate values from Slice
+func Unique(intSlice []int) []int {
+	keys := make(map[int]bool)
+	list := []int{}
+	for _, entry := range intSlice {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
+}
+
+// RemoveDuplicatesUnordered from string array
+func RemoveDuplicatesUnordered(elements []string) []string {
+	encountered := map[string]bool{}
+
+	// Create a map of all unique elements.
+	for v := range elements {
+		encountered[elements[v]] = true
+	}
+
+	// Place all keys from the map into a slice.
+	result := []string{}
+	for key := range encountered {
+		result = append(result, key)
+	}
 	return result
 }
