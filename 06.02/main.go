@@ -55,7 +55,15 @@ func valueByInput(file string) int {
 	}
 
 	planets := makeOrbits(input)
-	return countOrbits(planets)
+
+	san := findPlanet(planets, "SAN")
+	you := findPlanet(planets, "YOU")
+	a := pathToRoot(san)
+	b := pathToRoot(you)
+
+	logger.Debug("san -> root %d", len(a))
+	logger.Debug("you -> root %d", len(b))
+	return mergePaths(a, b)
 }
 
 func countOrbits(arr []*planet) int {
@@ -146,6 +154,68 @@ func findPlanet(arr []*planet, data string) *planet {
 	for _, a := range arr {
 		if a.data == data {
 			return a
+		}
+	}
+	return nil
+}
+
+func findInOrbit(arr []*planet, data string) *planet {
+	for _, a := range arr {
+		for _, b := range a.orbits {
+			if b.data == data {
+				return b
+			}
+		}
+	}
+	return nil
+}
+
+func pathToRoot(p *planet) []*planet {
+	arr := make([]*planet, 0)
+	logger.Debug("[%s] | %d", p.data, len(p.orbits))
+	if len(p.orbits) < 1 {
+		return arr
+	}
+	n := p.orbits[0]
+	arr = append(arr, n)
+	arr = append(arr, pathToRoot(n)...)
+	return arr
+}
+
+func mergePaths(a []*planet, b []*planet) int {
+	acc := 0
+	intersection := findIntersection(a, b)
+	logger.Debug("intersection: [%s]", intersection.data)
+
+	for _, p := range a {
+		if p == intersection {
+			break
+		}
+		acc++
+	}
+
+	logger.Debug("%s -> [%s] %d", a[0].data, intersection.data, len(a))
+
+	for _, p := range b {
+		if p == intersection {
+			break
+		}
+		acc++
+	}
+
+	logger.Debug("%s -> [%s] %d", b[0].data, intersection.data, len(a))
+
+	// acc += len(pathToRoot(intersection)) - 1
+
+	return acc
+}
+
+func findIntersection(a []*planet, b []*planet) *planet {
+	for _, _a := range b {
+		for _, _b := range a {
+			if _a.data == _b.data {
+				return _a
+			}
 		}
 	}
 	return nil

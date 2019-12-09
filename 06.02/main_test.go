@@ -1,47 +1,47 @@
 package main
 
 import (
-	"advent/utils"
-	"bufio"
-	"strings"
 	"testing"
 )
 
-// TestComply should match the requiremeents
-func TestCompy(t *testing.T) {
-	input := (`COM)B
-B)C
-C)D
-D)E
-E)F
-B)G
-G)H
-D)I
-E)J
-J)K
-K)L
-B)C
-C)D
-D)E
-E)F
-B)G
-G)H
-D)I
-E)J
-J)K
-K)L`)
-
-	f := strings.NewReader(input)
-	a, err := utils.ReadStrings(f, bufio.ScanLines)
-
-	if err != nil {
-		t.Errorf("Couldn't read string %s", input)
+// TestCountBasic should match the requiremeents
+func TestCountBasic(t *testing.T) {
+	_o = opts{
+		"./input.txt",
+		true,
 	}
+	got := valueByInput(_o.filePath)
+	want := 4
 
-	planets := makeOrbits(a)
-	got := countOrbits(planets)
+	if got != want {
+		t.Errorf("Count orbits = %d; want %d", got, want)
+	}
+}
 
-	if got != 42 {
-		t.Errorf("Count orbits = %d; want 42", got)
+// TestCountBasic should match the requiremeents
+func TestCountInputFile(t *testing.T) {
+	_o = opts{
+		"./final.txt",
+		false,
+	}
+	got := valueByInput(_o.filePath)
+	want := 484
+
+	if got != want {
+		t.Errorf("Count orbits = %d; want %d", got, want)
+	}
+}
+
+// TestCountBruno should match the requiremeents
+func TestCountBruno(t *testing.T) {
+	_o = opts{
+		"./bruno.txt",
+		false,
+	}
+	got := valueByInput(_o.filePath)
+	want := 472
+
+	if got != want {
+		t.Errorf("Count orbits = %d; want %d", got, want)
 	}
 }
