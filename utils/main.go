@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"strconv"
 	"strings"
@@ -75,10 +76,14 @@ func FmtIntSlice(values []int) string {
 	valuesText := []string{}
 	for i := range values {
 		number := values[i]
-		text := strconv.Itoa(number)
+		text := "[" + fmt.Sprintf("%5d", i) + "] " + fmt.Sprintf("%5d", number)
+
+		if (i+1)%10 == 0 {
+			text = text + "\n"
+		}
 		valuesText = append(valuesText, text)
 	}
-	return strings.Join(valuesText, ",")
+	return strings.Join(valuesText, ", ")
 }
 
 // FmtStrSlice returns a formatted str slice into comma separated

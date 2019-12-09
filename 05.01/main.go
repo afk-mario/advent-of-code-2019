@@ -47,17 +47,22 @@ func resultByFile(file string) {
 		panic(err)
 	}
 
-	fmt.Println("\nInput:", utils.FmtIntSlice(input))
+	if _o.debug {
+		fmt.Println("\nInput:\n", utils.FmtIntSlice(input))
+	}
 	result := readOpcodes(input)
-	fmt.Println("\nResult:", utils.FmtIntSlice(result))
+	if _o.debug {
+		fmt.Println("\nResult:", utils.FmtIntSlice(result))
+	}
 }
 
 func readOpcodes(input []int) []int {
+	logger.Debug("\n\n")
 	result := append([]int(nil), input...)
-	pointer := 5
-	for i := 0; i < len(result); i += pointer {
+	for i := 0; i < len(result); i++ {
 
 		instruction := -1
+		z := result[i]
 		t := strconv.Itoa(result[i])
 		l := len(t)
 
@@ -82,54 +87,61 @@ func readOpcodes(input []int) []int {
 			instruction = result[i]
 		}
 
-		logger.Debug("instruction: %d - a: %d b: %d c: %d", instruction, modA, modB, modC)
-
 		val := 0
 		where := 0
+		operator := 0
 
 		a := result[i+1]
 		b := result[i+2]
 		c := result[i+3]
 
-		if modA == 0 {
-			a = result[a]
-		}
-
-		if modB == 0 {
-			b = result[b]
-		}
-
-		if modC == 0 {
-			c = result[c]
-		}
+		logger.Debug("[%2d] instruction: %05d - | a: m %4d - i %4d | b: m %4d - i %4d | c: m %4d - i %4d", i, z, modA, a, modB, b, modC, c)
 
 		switch instruction {
 		case 1:
+			if modA == 0 {
+				a = result[a]
+			}
+
+			if modB == 0 {
+				b = result[b]
+			}
+
 			val = a + b
 			where = c
-			pointer = 5
+			operator = 3
 			break
 		case 2:
+			if modA == 0 {
+				a = result[a]
+			}
+
+			if modB == 0 {
+				b = result[b]
+			}
 			val = a * b
 			where = c
-			pointer = 5
+			operator = 3
 			break
 		case 3:
-			val = b
+			val = 1
 			where = a
-			pointer = 4
+			operator = 1
 			break
 		case 4:
-			val = a
-			where = b
-			pointer = 4
+			where = a
+			fmt.Printf("\n\n┌─────────┐")
+			fmt.Printf("\n│%9d│", result[where])
+			fmt.Printf("\n└─────────┘\n\n")
+			operator = 1
 			break
 		case 99:
 			return result
 			break
 		}
-
+		i += operator
 		result[where] = val
+		logger.Debug("[%2d] instruction: %05d - | a: m %4d - i %4d | b: m %4d - i %4d | c: m %4d - i %4d \n", i, z, modA, a, modB, b, modC, c)
 
 	}
 	return result
