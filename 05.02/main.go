@@ -245,6 +245,7 @@ func doOperation(arr []int, pointer int) []int {
 	debugtxt := fmt.Sprintf("DO \n instruction: %04d | op: %2d | pointer: %2d", nInstruction, operation, pointer)
 
 	if operation == 99 {
+		logger.Debug(debugtxt)
 		fmt.Println("\nFinish at: ", pointer)
 		return arr
 	}
