@@ -71,10 +71,10 @@ func resultByFile(file string) {
 		result := append(make([]int, 0), input...)
 		for _, i := range a {
 			_o.input = i
-			fmt.Println("\nInput:\n", utils.FmtIntSlice(result))
+			// fmt.Println("\nInput:\n", utils.FmtIntSlice(result))
 			result, z = doOperation(result, 0)
 			acc += z
-			fmt.Println("\nResult:\n", utils.FmtIntSlice(result))
+			// fmt.Println("\nResult:\n", utils.FmtIntSlice(result))
 		}
 		fmt.Println("\n______")
 		fmt.Println(a)

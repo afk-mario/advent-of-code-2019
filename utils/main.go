@@ -25,7 +25,7 @@ func ReadInts(r io.Reader, split bufio.SplitFunc) ([]int, error) {
 	return result, scanner.Err()
 }
 
-// ReadStrings reads whitespace-separated strings from r. If there's an error, it
+// ReadStrings reads strings from r. If there's an error, it
 // returns the ints successfully read so far as well as the error value.
 func ReadStrings(r io.Reader, split bufio.SplitFunc) ([]string, error) {
 	scanner := bufio.NewScanner(r)

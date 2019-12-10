@@ -27,7 +27,8 @@ func (a *Vector2) Add(b Vector2) Vector2 {
 	return Vector2{a.X + b.X, a.Y + b.Y}
 }
 
-func (a *Vector2) equals(b Vector2) bool {
+// Equals Check if two vectors are equal
+func (a *Vector2) Equals(b Vector2) bool {
 	return a.X == b.X && a.Y == b.Y
 }
 
@@ -68,11 +69,34 @@ type Line struct {
 	B Vector2
 }
 
-func (l *Line) isPointOn(p Vector2) bool {
+// IsPointOn check if a point is in line
+func (l *Line) IsPointOn(p Vector2) bool {
 	aTmp := Line{Vector2{0, 0}, Vector2{l.B.X - l.A.X, l.B.Y - l.A.Y}}
 	bTmp := Vector2{p.X - l.A.X, p.Y - l.A.Y}
 	r := aTmp.B.cross(bTmp)
 	return utils.Abs(r) == 0
+}
+
+// IsBetween checks if a point is between a line
+func (l *Line) IsBetween(c Vector2) bool {
+	a := l.A
+	b := l.B
+	crossproduct := (c.Y-a.Y)*(b.X-a.X) - (c.X-a.X)*(b.Y-a.Y)
+	if utils.Abs(crossproduct) != 0 {
+		return false
+	}
+
+	dotproduct := (c.X-a.X)*(b.X-a.X) + (c.Y-a.Y)*(b.Y-a.Y)
+	if dotproduct < 0 {
+		return false
+	}
+
+	squaredlengthba := (b.X-a.X)*(b.X-a.X) + (b.Y-a.Y)*(b.Y-a.Y)
+	if dotproduct > squaredlengthba {
+		return false
+	}
+
+	return true
 }
 
 func (l *Line) isPointRight(b Vector2) bool {
@@ -82,7 +106,7 @@ func (l *Line) isPointRight(b Vector2) bool {
 }
 
 func (l *Line) touchOrCross(b Line) bool {
-	return l.isPointOn(b.A) || l.isPointOn(b.B) || (l.isPointRight(b.A) != l.isPointRight(b.B))
+	return l.IsPointOn(b.A) || l.IsPointOn(b.B) || (l.isPointRight(b.A) != l.isPointRight(b.B))
 }
 
 // Intersects checks if two lines intersect
