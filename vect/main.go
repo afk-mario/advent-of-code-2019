@@ -2,6 +2,7 @@ package vect
 
 import (
 	"advent/utils"
+	"math"
 	"sort"
 )
 
@@ -18,7 +19,13 @@ type Vector2 struct {
 	Y int
 }
 
-func (a *Vector3) toVec2() Vector2 {
+// Equals Check if two vectors are equal
+func (a *Vector3) Equals(b Vector3) bool {
+	return a.X == b.X && a.Y == b.Y && a.Z == b.Z
+}
+
+// ToVec2 converts vector 3 to vector2
+func (a *Vector3) ToVec2() Vector2 {
 	return Vector2{a.X, a.Y}
 }
 
@@ -40,6 +47,17 @@ func (a *Vector2) MDistance() int {
 
 func (a *Vector2) cross(b Vector2) int {
 	return a.X*b.Y - b.X*a.Y
+}
+
+// Angle returns the angle between two vectors
+func (a *Vector2) Angle(b Vector2) int {
+	angle := math.Atan2(float64(a.Y-b.Y), float64(a.X-b.X))
+	angle += 1.5707963268
+	result := int(angle * (180 / math.Pi))
+	if result < 0 {
+		result = 270 + -result
+	}
+	return result
 }
 
 // SortByX ...
