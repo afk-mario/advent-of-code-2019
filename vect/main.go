@@ -55,7 +55,7 @@ func (a *Vector2) Angle(b Vector2) int {
 	angle += 1.5707963268
 	result := int(angle * (180 / math.Pi))
 	if result < 0 {
-		result = 270 + -result
+		result = 360 - (result * -1)
 	}
 	return result
 }

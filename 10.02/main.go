@@ -75,6 +75,9 @@ func resultByFile(file string) vect.Vector2 {
 
 	if _o.debug {
 		fmt.Println("angles")
+		for _, i := range angles {
+			fmt.Println(i)
+		}
 		for _, i := range gAngles {
 			fmt.Println(i)
 		}
