@@ -74,10 +74,11 @@ func resultByFile(file string) vect.Vector2 {
 	gAngles := groupAngles(angles, laser)
 
 	if _o.debug {
-		fmt.Println("angles")
+		fmt.Println("angles \n")
 		for _, i := range angles {
 			fmt.Println(i)
 		}
+		fmt.Println("\n gAngles \n")
 		for _, i := range gAngles {
 			fmt.Println(i)
 		}
@@ -244,15 +245,15 @@ func getDesroyed(arr [][]vect.Vector3, laser vect.Vector2, revolutions int) []ve
 
 	for len(ded) < revolutions {
 
-		fmt.Println("ded0----", revolutions, len(ded), i)
+		// fmt.Println("ded0----", revolutions, len(ded), i)
 		if len(arr[i]) > 0 {
 			last := len(arr[i]) - 1
 			last = 0
-			fmt.Println("ded----", arr[i][last], len(arr[i]))
+			// fmt.Println("ded----", arr[i][last], len(arr[i]))
 			v := arr[i][last].ToVec2()
 			ded = append(ded, v)
 			arr[i] = remove(arr[i], arr[i][last])
-			fmt.Println("ded2----", arr[i], len(arr[i]))
+			// fmt.Println("ded2----", arr[i], len(arr[i]))
 			i++
 		} else {
 			i++

@@ -51,13 +51,28 @@ func (a *Vector2) cross(b Vector2) int {
 
 // Angle returns the angle between two vectors
 func (a *Vector2) Angle(b Vector2) int {
-	angle := math.Atan2(float64(a.Y-b.Y), float64(a.X-b.X))
+	dx := a.X - b.X
+	dy := a.Y - b.Y
+	angle := math.Atan2(float64(dy), float64(dx))
 	angle += 1.5707963268
-	result := int(angle * (180 / math.Pi))
+	result := angle * (180 / math.Pi)
 	if result < 0 {
 		result = 360 - (result * -1)
 	}
-	return result
+	// result = (result % 360) + 360
+
+	// if dx == 0 && dy == 0 {
+	// 	result = result
+	// } else if dx < 0 && dy > 0 {
+	// 	result = 180 - result
+	// } else if dx < 0 && dy < 0 {
+	// 	result = 180 + result
+	// } else if dx > 0 && dy < 0 {
+	// 	result = 360 - result
+	// } else if dx > 0 && dy > 0 {
+	// 	result = 360 + result
+	// }
+	return int(result * 10000)
 }
 
 // SortByX ...
