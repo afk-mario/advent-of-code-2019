@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 
 	prmt "github.com/gitchander/permutation"
@@ -41,10 +42,13 @@ func main() {
 		logger.EnableDebug()
 	}
 
-	resultByFile(_o.path)
+	result := resultByFile(_o.path)
+	fmt.Println("\n______")
+	fmt.Println("result", result)
+	fmt.Println("______\n")
 }
 
-func resultByFile(file string) {
+func resultByFile(file string) int {
 	fmt.Println("\nPrinting value by file ---", file)
 	f, err := os.Open(file)
 	if err != nil {
@@ -53,41 +57,35 @@ func resultByFile(file string) {
 
 	defer f.Close()
 
-	input, err := utils.ReadInts(f, utils.SplitComma)
+	program, err := utils.ReadInts(f, utils.SplitComma)
 	if err != nil {
 		panic(err)
 	}
 
 	if _o.debug {
-		fmt.Println("\nInput:\n", utils.FmtIntSlice(input))
+		fmt.Println("\nInput:\n", utils.FmtIntSlice(program))
 	}
 
 	a := []int{0, 1, 2, 3, 4}
 	p := prmt.New(prmt.IntSlice(a))
-	// result := append(make([]int, 0), input...)
+	r := []int{}
+
+	// result := append(make([]int, 0), program...)
 	for p.Next() {
 		acc := 0
-		z := 0
-		result := append(make([]int, 0), input...)
-		for _, i := range a {
-			_o.input = i
-			// fmt.Println("\nInput:\n", utils.FmtIntSlice(result))
-			result, z = doOperation(result, 0)
-			acc += z
-			// fmt.Println("\nResult:\n", utils.FmtIntSlice(result))
+		result := 0
+		fmt.Printf("\n\n Permutation %v \n\n", a)
+		for _, perm := range a {
+			input := []int{perm, result}
+			_, result = doOperation(program, input, 0, 0)
+			acc++
 		}
-		fmt.Println("\n______")
-		fmt.Println(a)
-		fmt.Println("result", acc)
-		fmt.Println("\n______")
+
+		r = append(r, result)
 	}
 
-	// _o.input = 0
-	// result, acc := doOperation(input, 0)
-	// if _o.debug {
-	// 	fmt.Println("\nResult:", utils.FmtIntSlice(result))
-	// 	fmt.Println("\aacc:", acck
-	// }
+	sort.Ints(r)
+	return r[len(r)-1]
 }
 
 func getOperation(s string) int {
@@ -110,7 +108,7 @@ func getModes(instruction string, l int) []int {
 		return []int{0, 0, 0}
 	}
 
-	modes := make([]int, 0)
+	modes := []int{}
 	instruction = instruction[:len(instruction)-2]
 	for _, c := range instruction {
 		mode := c - '0'
@@ -163,7 +161,7 @@ func setParamsByOp(op int, arr, params, modes []int) []int {
 // Normally operations take the first two params to do something and the last to output the operation
 func getParams(op, pointer int, modes []int, arr []int) []int {
 	size := getSizeByOP(op)
-	params := make([]int, 0)
+	params := []int{}
 
 	for i := 0; i < size; i++ {
 		a := arr[pointer+i+1]
@@ -230,7 +228,7 @@ func getJumpByOp(op int, pointer int, params, modes []int, arr []int) int {
 	return 0
 }
 
-func operate(op, pointer int, params, modes, arr []int) ([]int, int) {
+func operate(op, pointer int, params, modes, arr []int, input int) ([]int, int) {
 	acc := 0
 	switch op {
 	case 1:
@@ -240,7 +238,7 @@ func operate(op, pointer int, params, modes, arr []int) ([]int, int) {
 		arr[params[2]] = params[0] * params[1]
 		break
 	case 3:
-		arr[params[0]] = _o.input
+		arr[params[0]] = input
 		break
 	case 4:
 		acc = params[0]
@@ -264,8 +262,9 @@ func operate(op, pointer int, params, modes, arr []int) ([]int, int) {
 	return arr, acc
 }
 
-func doOperation(arr []int, pointer int) ([]int, int) {
+func doOperation(arr, input []int, pointer, inputI int) ([]int, int) {
 	acc := 0
+	_I := inputI
 	nInstruction := arr[pointer]
 	sInstruction := strconv.Itoa(arr[pointer])
 
@@ -279,21 +278,27 @@ func doOperation(arr []int, pointer int) ([]int, int) {
 	}
 
 	if operation > 8 || operation < 1 {
-		fmt.Println("\nOperation not supported: ", operation)
-		return arr, acc
+		logger.Debug("%s \n", debugtxt)
+		panic(fmt.Sprintf("Operation not supported %d", operation))
 	}
 
 	modes := getModes(sInstruction, 3)
 	params := getParams(operation, pointer, modes, arr)
 	jump := getJumpByOp(operation, pointer, params, modes, arr)
 
-	debugtxt += fmt.Sprintf(" | modes: %v | params %v | jump %d", modes, params, jump)
+	debugtxt += fmt.Sprintf(" | modes: %v | params %v | jump %d | input %v | _I %d", modes, params, jump, input, _I)
 	logger.Debug(debugtxt)
 
-	arr, a := operate(operation, pointer, params, modes, arr)
+	arr, a := operate(operation, pointer, params, modes, arr, input[_I])
+	if operation == 3 {
+		_I++
+		if _I > len(input)-1 {
+			_I = 0
+		}
+	}
 
 	acc += a
 
-	x, y := doOperation(arr, jump)
+	x, y := doOperation(arr, input, jump, _I)
 	return x, y + acc
 }
